@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RentCarAPI.Data
 {
-    interface IRegistersRepo
+    public interface IRegistersRepo
     {
         //Get all Registers in the application
         IEnumerable<Registers> GetAllRegisters();
 
         //Get a register by it ID
-        Cars GetRegisterById(int Id);
+        Registers GetRegisterById(int Id);
 
         //Create a new register to the DB
         void CreateRegister(Registers rgt);

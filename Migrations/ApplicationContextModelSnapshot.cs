@@ -49,6 +49,34 @@ namespace RentCarAPI.Migrations
                     b.ToTable("Cars");
                 });
 
+            modelBuilder.Entity("RentCarAPI.Models.Registers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Registers");
+                });
+
             modelBuilder.Entity("RentCarAPI.Models.Users", b =>
                 {
                     b.Property<int>("Id")
@@ -67,6 +95,21 @@ namespace RentCarAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RentCarAPI.Models.Registers", b =>
+                {
+                    b.HasOne("RentCarAPI.Models.Cars", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId");
+
+                    b.HasOne("RentCarAPI.Models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Car");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

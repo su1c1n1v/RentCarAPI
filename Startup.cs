@@ -29,6 +29,7 @@ namespace RentCarAPI
             services.AddDbContext<ApplicationContext>(Temp => Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
             services.AddControllers();
             services.AddScoped<IUsersRepo, SqlUsersRepo>();
+            services.AddScoped<IRegistersRepo, SqlRegistesRepo>();
             services.AddScoped<ICarsRepo, SqlCarsRepo>();
         }
 

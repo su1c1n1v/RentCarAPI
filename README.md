@@ -2,8 +2,16 @@
 ### The project has the goal to build a API that provide the datas from a store of rent cars.
 ---
 #### The goals
-- [ ] Build a API in .NET;
-- [ ] Provide the datas from Users, Cars and Registers(registes of cars rented);
+- [ ] Build a API in .NET (in progress);
+- [ ] Create a new User;
+- [ ] Create a new Car;
+- [ ] Create a new Register;
+- [ ] Update a Register;
+- [ ] Update a Car;
+- [ ] Update a User;
+- [x] Provide Registers data (registes of cars rented);
+- [x] Provide Users data;
+- [x] Provide Cars data;
 - [x] SQL Server; 
 - [x] User Authentication (You need to create a login in the SQL Server).
 ---
@@ -11,6 +19,7 @@
 - .NET Core;
 - SQL Server;
 - Visual Studio;
+- PostgreSQL (to test the requests).
 ---
 #### Dependencies
 - Microsoft.EntityFrameworkCore;

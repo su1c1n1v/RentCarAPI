@@ -16,7 +16,7 @@ namespace RentCarAPI.Data
 
 
         public DbSet<Cars> Cars { get; set; }
-        //public DbSet<Registers> Registers { get; set; }
+        public DbSet<Registers> Registers { get; set; }
         public DbSet<Users> Users { get; set; }
     }
 }

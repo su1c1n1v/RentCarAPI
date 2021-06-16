@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace RentCarAPI.Data
 {
-    interface IUsersRepo
+    public interface IUsersRepo
     {
         //Get all Users in the application
         IEnumerable<Users> GetAllUsers();
 
         //Get a user by it ID
-        Users GetUserById(int Id);
+        Users GetUsersById(int Id);
 
         //Create a new user to the DB
-        void CreateUser(Users pkm);
+        void CreateUsers(Users pkm);
 
         //Save the thinks added in the DB
         bool SaveChanges();

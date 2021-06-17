@@ -22,17 +22,24 @@ namespace RentCarAPI.Data
             {
                 throw new ArgumentNullException(nameof(Registers));
             }
+            rgt.StartDate = DateTime.Now;
             _context.Registers.Add(rgt);
         }
 
         public IEnumerable<Registers> GetAllRegisters()
         {
-            return _context.Registers.Include(Temp => Temp.Car).Include(Temp => Temp.User).ToList();
+            return _context.Registers
+                .Include(Temp => Temp.Car)
+                .Include(Temp => Temp.User)
+                .ToList();
         }
 
         public Registers GetRegisterById(int Id)
         {
-            return _context.Registers.FirstOrDefault(Temp => Temp.Id == Id);
+            return _context.Registers.
+                Include(Temp => Temp.Car)
+                .Include(Temp => Temp.User)
+                .FirstOrDefault(Temp => Temp.Id == Id);
         }
 
         public bool SaveChanges()

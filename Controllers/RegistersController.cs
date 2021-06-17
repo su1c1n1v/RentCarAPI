@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RentCarAPI.Data;
+using RentCarAPI.Dtos;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -13,30 +15,38 @@ namespace RentCarAPI.Controllers
     public class RegistersController : ControllerBase
     {
         private readonly IRegistersRepo _repository;
+        private readonly IMapper _mapper;
 
-        public RegistersController(IRegistersRepo repository)
+        public RegistersController(IRegistersRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Registers>> GetRegistersById(int Id)
+        public ActionResult<RegistersReadDto> GetRegistersById(int Id)
         {
-            return Ok(_repository.GetRegisterById(Id));
+            var registerItem = _repository.GetRegisterById(Id);
+            var registerReadDto = _mapper.Map<RegistersReadDto>(registerItem);
+            return Ok(registerReadDto);
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Registers>> GetAllRegisters()
+        public ActionResult<IEnumerable<RegistersReadDto>> GetAllRegisters()
         {
-            return Ok(_repository.GetAllRegisters());
+            var registersItens = _repository.GetAllRegisters();
+            var registersReadDto = _mapper.Map<IEnumerable<RegistersReadDto>>(registersItens);
+            return Ok(registersReadDto);
         }
 
         [HttpPost]
-        public ActionResult<Registers> CreateRegister(Registers registers)
+        public ActionResult<RegistersReadDto> CreateRegister(RegistersCreateDto registersCreateDto)
         {
-            _repository.CreateRegister(registers);
+            var registerModel = _mapper.Map<Registers>(registersCreateDto);
+            _repository.CreateRegister(registerModel);
             _repository.SaveChanges();
-            return Ok(registers);
+            var registersCreated = _repository.GetRegisterById(registerModel.Id);
+            return Ok(_mapper.Map<RegistersReadDto>(registersCreated));
         }
     }
 }

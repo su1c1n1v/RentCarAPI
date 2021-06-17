@@ -21,6 +21,8 @@ namespace RentCarAPI.Data
             {
                 throw new ArgumentNullException(nameof(Cars));
             }
+            crs.Date = DateTime.Now;
+            crs.Available = true;
             _context.Cars.Add(crs);
         }
 

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RentCarAPI.Data;
+using RentCarAPI.Dtos;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -13,35 +15,42 @@ namespace RentCarAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersRepo _repository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUsersRepo repository)
+        public UsersController(IUsersRepo repository, IMapper mapper)
         {
-            _repository = repository; 
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Users>> GetAllCars()
+        public ActionResult<IEnumerable<UsersReadDto>> GetAllUsers()
         {
-            return Ok(_repository.GetAllUsers());
+            var usersItems = _repository.GetAllUsers();
+            var usersDto = _mapper.Map<IEnumerable<UsersReadDto>>(usersItems);
+            return Ok(usersDto);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Users>> GetUsersById(int Id)
+        public ActionResult<UsersReadDto> GetUsersById(int Id)
         {
-            var user = _repository.GetUsersById(Id);
-            if (user != null)
+            var usersItems = _repository.GetUsersById(Id);
+            if (usersItems != null)
             {
-                return Ok(user);
+                var usersDto = _mapper.Map<UsersReadDto>(usersItems);
+                return Ok(usersDto);
             }
             return NotFound();
         }
 
         [HttpPost]
-        public ActionResult<Users> CreateUsers(Users user)
+        public ActionResult<UsersReadDto> CreateUsers(UsersCreateDto userCreateDto)
         {
-            _repository.CreateUsers(user);
+            var usersModel = _mapper.Map<Users>(userCreateDto);
+            _repository.CreateUsers(usersModel);
             _repository.SaveChanges();
-            return Ok(user);
+            var usersReadDto = _mapper.Map<UsersReadDto>(usersModel);
+            return Ok(usersReadDto);
         }
     }
 }

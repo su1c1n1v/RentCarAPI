@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using RentCarAPI.Data;
 using System;
 using System.Collections.Generic;
@@ -27,6 +25,7 @@ namespace RentCarAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(Temp => Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers();
             services.AddScoped<IUsersRepo, SqlUsersRepo>();
             services.AddScoped<IRegistersRepo, SqlRegistesRepo>();

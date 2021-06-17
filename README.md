@@ -8,7 +8,9 @@
 - [x] Create a new Register;
 - [ ] Update a Register;
 - [ ] Update a Car;
+- [x] Implements Dto using AutoMapper;
 - [ ] Update a User;
+- [ ] Rent a car;
 - [x] Provide Registers data (registes of cars rented);
 - [x] Provide Users data;
 - [x] Provide Cars data;
@@ -25,6 +27,7 @@
 - Microsoft.EntityFrameworkCore;
 - Microsoft.EntityFrameworkCore.Design;
 - Microsoft.EntityFrameworkCore.SqlServer [1];
+- AutoMapper.Extensions.Microsoft.DependencyInjection.
 ---
 #### Migrations
 - "dotnet toll install --global dotnet-ef" => to install the "dotnet-ef if you dont have installed in your PC";

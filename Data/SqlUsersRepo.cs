@@ -17,7 +17,11 @@ namespace RentCarAPI.Data
 
         public void CreateUsers(Users user)
         {
-            return;
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            _context.Users.Add(user);
         }
 
         public IEnumerable<Users> GetAllUsers()

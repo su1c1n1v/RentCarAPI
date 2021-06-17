@@ -14,7 +14,6 @@ namespace RentCarAPI.Controllers
     {
         private readonly IUsersRepo _repository;
 
-
         public UsersController(IUsersRepo repository)
         {
             _repository = repository; 
@@ -35,6 +34,14 @@ namespace RentCarAPI.Controllers
                 return Ok(user);
             }
             return NotFound();
+        }
+
+        [HttpPost]
+        public ActionResult<Users> CreateUsers(Users user)
+        {
+            _repository.CreateUsers(user);
+            _repository.SaveChanges();
+            return Ok(user);
         }
     }
 }

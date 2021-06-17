@@ -15,7 +15,7 @@ namespace RentCarAPI.Data
         Users GetUsersById(int Id);
 
         //Create a new user to the DB
-        void CreateUsers(Users pkm);
+        void CreateUsers(Users usr);
 
         //Save the thinks added in the DB
         bool SaveChanges();

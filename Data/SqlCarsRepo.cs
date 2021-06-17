@@ -15,9 +15,13 @@ namespace RentCarAPI.Data
             _context = context;
         }
 
-        public void CreateCar(Cars car)
+        public void CreateCar(Cars crs)
         {
-
+            if (crs == null)
+            {
+                throw new ArgumentNullException(nameof(Cars));
+            }
+            _context.Cars.Add(crs);
         }
 
         public IEnumerable<Cars> GetAllCars()

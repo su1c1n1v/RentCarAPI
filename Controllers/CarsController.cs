@@ -20,6 +20,14 @@ namespace RentCarAPI.Controllers
             _repository = repository;
         }
 
+        [HttpPost]
+        public ActionResult<Cars> CreateCars(Cars car)
+        {
+            _repository.CreateCar(car);
+            _repository.SaveChanges();
+            return Ok(car);
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<Cars>> GetAllCars()
         {

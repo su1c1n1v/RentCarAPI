@@ -3,9 +3,9 @@
 ---
 #### The goals
 - [ ] Build a API in .NET (in progress);
-- [ ] Create a new User;
-- [ ] Create a new Car;
-- [ ] Create a new Register;
+- [x] Create a new User;
+- [x] Create a new Car;
+- [x] Create a new Register;
 - [ ] Update a Register;
 - [ ] Update a Car;
 - [ ] Update a User;
@@ -17,14 +17,14 @@
 ---
 #### The technologies
 - .NET Core;
-- SQL Server;
-- Visual Studio;
-- PostgreSQL (to test the requests).
+- SQL Server (you can use another DB, but you need to change the [1]);
+- Visual Studio (but you can you Visual Studio Code);
+- Postman (to test the requests).
 ---
 #### Dependencies
 - Microsoft.EntityFrameworkCore;
 - Microsoft.EntityFrameworkCore.Design;
-- Microsoft.EntityFrameworkCore.SqlServer;
+- Microsoft.EntityFrameworkCore.SqlServer [1];
 ---
 #### Migrations
 - "dotnet toll install --global dotnet-ef" => to install the "dotnet-ef if you dont have installed in your PC";

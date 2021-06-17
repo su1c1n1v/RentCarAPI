@@ -19,16 +19,24 @@ namespace RentCarAPI.Controllers
             _repository = repository;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public ActionResult<IEnumerable<Registers>> GetRegistersById(int Id)
         {
             return Ok(_repository.GetRegisterById(Id));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public ActionResult<IEnumerable<Registers>> GetAllRegisters()
         {
             return Ok(_repository.GetAllRegisters());
+        }
+
+        [HttpPost]
+        public ActionResult<Registers> CreateRegister(Registers registers)
+        {
+            _repository.CreateRegister(registers);
+            _repository.SaveChanges();
+            return Ok(registers);
         }
     }
 }

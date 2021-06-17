@@ -15,7 +15,7 @@ namespace RentCarAPI.Data
         Cars GetCarsById(int Id);
 
         //Create a new car to the DB
-        void CreateCar(Cars pkm);
+        void CreateCar(Cars crs);
 
         //Save the thinks added in the DB
         bool SaveChanges();

@@ -18,7 +18,11 @@ namespace RentCarAPI.Data
 
         public void CreateRegister(Registers rgt)
         {
-            return;
+            if(rgt == null)
+            {
+                throw new ArgumentNullException(nameof(Registers));
+            }
+            _context.Registers.Add(rgt);
         }
 
         public IEnumerable<Registers> GetAllRegisters()

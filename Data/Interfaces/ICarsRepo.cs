@@ -19,5 +19,11 @@ namespace RentCarAPI.Data
 
         //Save the thinks added in the DB
         bool SaveChanges();
+
+        void UpdateCars(Cars crs);
+
+        void DeleteCars(Cars crs);
+
+        bool IsCarAvailable(Cars crs);
     }
 }

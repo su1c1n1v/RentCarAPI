@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RentCarAPI.Data;
 using RentCarAPI.Dtos;
@@ -27,14 +28,12 @@ namespace RentCarAPI.Controllers
         [HttpPost]
         public ActionResult<CarsReadDto> CreateCars(CarsCreateDto carsCreateDto)
         {
-            if (carsCreateDto == null)
-            {
-                throw new ArgumentNullException(nameof(Cars));
-            }
             var carsModel = _mapper.Map<Cars>(carsCreateDto);
             _repository.CreateCar(carsModel);
             _repository.SaveChanges();
-            return Ok(_mapper.Map<CarsReadDto>(carsModel));
+            var carReadDto = _mapper.Map<CarsReadDto>(carsModel);
+            //return CreatedAtRoute(nameof(GetCarById), new { Id = carReadDto.Id, carReadDto });
+            return Ok(carReadDto);
         }
 
         [HttpGet]
@@ -45,7 +44,7 @@ namespace RentCarAPI.Controllers
             return Ok(carsReadDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCarById")]
         public ActionResult<CarsReadDto> GetCarById(int Id)
         {
             var carItem = _repository.GetCarsById(Id);
@@ -55,6 +54,54 @@ namespace RentCarAPI.Controllers
                 return Ok(carsReadDto);
             }
             return NotFound();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateCars(int id, CarsUpdateDto carsUpdateDto)
+        {
+            var carsModelFromRepo = _repository.GetCarsById(id);
+            if (carsModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(carsUpdateDto, carsModelFromRepo);
+            _repository.UpdateCars(carsModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult PartialCarsUpdate(int id, JsonPatchDocument<CarsUpdateDto> patchDocument)
+        {
+            var carsModelFromRepo = _repository.GetCarsById(id);
+            if (carsModelFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var carsToPatch = _mapper.Map<CarsUpdateDto>(carsModelFromRepo);
+            patchDocument.ApplyTo(carsToPatch, ModelState);
+            if (!TryValidateModel(carsToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            _mapper.Map(carsToPatch, carsModelFromRepo);
+            _repository.UpdateCars(carsModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCars(int id)
+        {
+            var carsModelFromRepo = _repository.GetCarsById(id);
+            if (carsModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteCars(carsModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
         }
     }
 }

@@ -12,12 +12,16 @@ namespace RentCarAPI.Data
         IEnumerable<Registers> GetAllRegisters();
 
         //Get a register by it ID
-        Registers GetRegisterById(int Id);
+        Registers GetRegistersById(int Id);
 
         //Create a new register to the DB
-        void CreateRegister(Registers rgt);
+        void CreateRegisters(Registers rgt);
 
         //Save the thinks added in the DB
         bool SaveChanges();
+
+        void UpdateRegisters(Registers rgt);
+
+        void DeleteRegisters(Registers rgt);
     }
 }

@@ -14,6 +14,8 @@ namespace RentCarAPI.Profiles
         {
             CreateMap<Registers, RegistersReadDto>();
             CreateMap<RegistersCreateDto, Registers>();
+            CreateMap<RegistersUpdateDto, Registers>();
+            CreateMap<Registers, RegistersUpdateDto>();
         }
     }
 }

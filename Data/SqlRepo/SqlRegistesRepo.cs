@@ -16,7 +16,7 @@ namespace RentCarAPI.Data
             _context = context;
         }
 
-        public void CreateRegister(Registers rgt)
+        public void CreateRegisters(Registers rgt)
         {
             if(rgt == null)
             {
@@ -24,6 +24,15 @@ namespace RentCarAPI.Data
             }
             rgt.StartDate = DateTime.Now;
             _context.Registers.Add(rgt);
+        }
+
+        public void DeleteRegisters(Registers rgt)
+        {
+            if (rgt == null)
+            {
+                throw new ArgumentNullException(nameof(Registers));
+            }
+            _context.Registers.Remove(rgt);
         }
 
         public IEnumerable<Registers> GetAllRegisters()
@@ -34,7 +43,7 @@ namespace RentCarAPI.Data
                 .ToList();
         }
 
-        public Registers GetRegisterById(int Id)
+        public Registers GetRegistersById(int Id)
         {
             return _context.Registers.
                 Include(Temp => Temp.Car)
@@ -45,6 +54,11 @@ namespace RentCarAPI.Data
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public void UpdateRegisters(Registers rgt)
+        {
+            //Nothing
         }
     }
 }

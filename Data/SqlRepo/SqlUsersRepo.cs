@@ -24,6 +24,20 @@ namespace RentCarAPI.Data
             _context.Users.Add(user);
         }
 
+        public void DeleteUsers(Users usr)
+        {
+            if (usr == null)
+            {
+                throw new ArgumentNullException(nameof(usr));
+            }
+            var registers = _context.Registers.Where(Temp => Temp.UserId == usr.Id).ToList();
+            foreach (Registers rgs in registers)
+            {
+                _context.Registers.Remove(rgs);
+            }
+            _context.Users.Remove(usr);
+        }
+
         public IEnumerable<Users> GetAllUsers()
         {
             return _context.Users.ToList();
@@ -37,6 +51,20 @@ namespace RentCarAPI.Data
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public void UpdateUsers(Users usr)
+        {
+            //nothing
+        }
+
+        public bool UserExist(Users usr)
+        {
+            if (usr == null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

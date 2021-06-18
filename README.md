@@ -2,20 +2,21 @@
 ### The project has the goal to build a API that provide the datas from a store of rent cars.
 ---
 #### The goals
-- [ ] Build a API in .NET (in progress);
+- [x] Build a API in .NET;
 - [x] Create a new User;
 - [x] Create a new Car;
 - [x] Create a new Register;
-- [ ] Update a Register;
-- [ ] Update a Car;
+- [x] Update a Register;
+- [x] Update a Car;
 - [x] Implements Dto using AutoMapper;
-- [ ] Update a User;
-- [ ] Rent a car;
-- [x] Provide Registers data (registes of cars rented);
+- [x] Update a User;
+- [x] Rent a car;
+- [x] Provide Registers data (registers of cars rented);
 - [x] Provide Users data;
 - [x] Provide Cars data;
 - [x] SQL Server; 
 - [x] User Authentication (You need to create a login in the SQL Server).
+
 ---
 #### The technologies
 - .NET Core;
@@ -27,6 +28,8 @@
 - Microsoft.EntityFrameworkCore;
 - Microsoft.EntityFrameworkCore.Design;
 - Microsoft.EntityFrameworkCore.SqlServer [1];
+- Microsoft.AspNetCore.JsonPatch;
+- Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 - AutoMapper.Extensions.Microsoft.DependencyInjection.
 ---
 #### Migrations

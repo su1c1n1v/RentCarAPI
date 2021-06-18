@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 using RentCarAPI.Data;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,9 @@ namespace RentCarAPI
         {
             services.AddDbContext<ApplicationContext>(Temp => Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(Temp => {
+                Temp.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddScoped<IUsersRepo, SqlUsersRepo>();
             services.AddScoped<IRegistersRepo, SqlRegistesRepo>();
             services.AddScoped<ICarsRepo, SqlCarsRepo>();

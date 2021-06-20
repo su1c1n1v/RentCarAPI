@@ -30,7 +30,7 @@
 - Microsoft.EntityFrameworkCore.SqlServer [1];
 - Microsoft.AspNetCore.JsonPatch;
 - Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-- AutoMapper.Extensions.Microsoft.DependencyInjection.
+- AutoMapper.Extensions.Microsoft.DependencyInjection;
 ---
 #### Migrations
 - "dotnet toll install --global dotnet-ef" => to install the "dotnet-ef if you dont have installed in your PC";

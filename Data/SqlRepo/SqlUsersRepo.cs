@@ -1,4 +1,5 @@
-﻿using RentCarAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace RentCarAPI.Data
             _context = context;
         }
 
-        public void CreateUsers(Users user)
+        public void CreateUsers(IdentityUser user)
         {
             if (user == null)
             {
@@ -24,13 +25,13 @@ namespace RentCarAPI.Data
             _context.Users.Add(user);
         }
 
-        public void DeleteUsers(Users usr)
+        public void DeleteUsers(IdentityUser usr)
         {
             if (usr == null)
             {
                 throw new ArgumentNullException(nameof(usr));
             }
-            var registers = _context.Registers.Where(Temp => Temp.UserId == usr.Id).ToList();
+            var registers = _context.Registers.Where(Temp => Temp.Equals(usr.Id)).ToList();
             foreach (Registers rgs in registers)
             {
                 _context.Registers.Remove(rgs);
@@ -38,12 +39,12 @@ namespace RentCarAPI.Data
             _context.Users.Remove(usr);
         }
 
-        public IEnumerable<Users> GetAllUsers()
+        public IEnumerable<IdentityUser> GetAllUsers()
         {
             return _context.Users.ToList();
         }
 
-        public Users GetUsersById(int Id)
+        public IdentityUser GetUsersById(String Id)
         {
             return _context.Users.FirstOrDefault(Temp => Temp.Id == Id);
         }
@@ -53,12 +54,12 @@ namespace RentCarAPI.Data
             return (_context.SaveChanges() >= 0);
         }
 
-        public void UpdateUsers(Users usr)
+        public void UpdateUsers(IdentityUser usr)
         {
             //nothing
         }
 
-        public bool UserExist(Users usr)
+        public bool UserExist(IdentityUser usr)
         {
             if (usr == null)
             {

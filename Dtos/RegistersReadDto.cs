@@ -1,4 +1,5 @@
-﻿using RentCarAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,6 +24,6 @@ namespace RentCarAPI.Dtos
         public virtual Cars Car { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual Users User { get; set; }
+        public virtual IdentityUser User { get; set; }
     }
 }

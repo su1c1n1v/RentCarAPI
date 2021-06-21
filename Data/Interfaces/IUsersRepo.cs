@@ -1,4 +1,5 @@
-﻿using RentCarAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,20 @@ namespace RentCarAPI.Data
     public interface IUsersRepo
     {
         //Get all Users in the application
-        IEnumerable<Users> GetAllUsers();
+        IEnumerable<IdentityUser> GetAllUsers();
 
         //Get a user by it ID
-        Users GetUsersById(int Id);
+        IdentityUser GetUsersById(string Id);
 
         //Create a new user to the DB
-        void CreateUsers(Users usr);
+        void CreateUsers(IdentityUser usr);
 
         //Save the thinks added in the DB
         bool SaveChanges();
 
-        void UpdateUsers(Users usr);
+        void UpdateUsers(IdentityUser usr);
 
-        void DeleteUsers(Users usr);
-        bool UserExist(Users usr);
+        void DeleteUsers(IdentityUser usr);
+        bool UserExist(IdentityUser usr);
     }
 }

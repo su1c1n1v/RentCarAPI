@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +19,8 @@ namespace RentCarAPI.Models
         [Required]
         public DateTime EndDate { get; set; }
 
-        public int? UserId { get; set; }
+        [Required]
+        public String UserId { get; set; }
 
         public int? CarId { get; set; }
 
@@ -26,6 +28,6 @@ namespace RentCarAPI.Models
         public virtual Cars Car { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual Users User { get; set; }
+        public virtual IdentityUser User { get; set; }
     }
 }

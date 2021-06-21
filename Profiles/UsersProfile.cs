@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using RentCarAPI.Dtos;
 using RentCarAPI.Models;
 using System;
@@ -12,10 +13,10 @@ namespace RentCarAPI.Profiles
     {
         public UsersProfile()
         {
-            CreateMap<Users, UsersReadDto>();
-            CreateMap<UsersCreateDto, Users>();
-            CreateMap<UsersUpdateDto, Users>();
-            CreateMap<Users, UsersUpdateDto>();
+            CreateMap<IdentityUser, UsersReadDto>();
+            CreateMap<UsersCreateDto, IdentityUser>();
+            CreateMap<UsersUpdateDto, IdentityUser>();
+            CreateMap<IdentityUser, UsersUpdateDto>();
         }
     }
 }

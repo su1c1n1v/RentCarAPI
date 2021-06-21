@@ -9,7 +9,7 @@ namespace RentCarAPI.Dtos
     public class UsersUpdateDto
     {
         [Required]
-        public String Name { get; set; }
+        public String UserName { get; set; }
 
         [Required]
         public String Email { get; set; }

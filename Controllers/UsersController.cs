@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RentCarAPI.Data;
@@ -33,7 +34,7 @@ namespace RentCarAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<UsersReadDto> GetUsersById(int Id)
+        public ActionResult<UsersReadDto> GetUsersById(String Id)
         {
             var usersItems = _repository.GetUsersById(Id);
             if (usersItems != null)
@@ -47,14 +48,15 @@ namespace RentCarAPI.Controllers
         [HttpPost]
         public ActionResult<UsersReadDto> CreateUsers(UsersCreateDto userCreateDto)
         {
-            var usersModel = _mapper.Map<Users>(userCreateDto);
+            var usersModel = _mapper.Map<IdentityUser>(userCreateDto);
+            usersModel.EmailConfirmed = true;
             _repository.CreateUsers(usersModel);
             _repository.SaveChanges();
             var usersReadDto = _mapper.Map<UsersReadDto>(usersModel);
             return Ok(usersReadDto);
         }
         [HttpDelete("{id}")]
-        public ActionResult DeleteUsers(int id)
+        public ActionResult DeleteUsers(String id)
         {
             var usersFromRepo = _repository.GetUsersById(id);
             if (usersFromRepo == null)
@@ -66,7 +68,7 @@ namespace RentCarAPI.Controllers
             return NoContent();
         }
         [HttpPut("{id}")]
-        public ActionResult UpdateUsers(int id, UsersUpdateDto usersUpdateDto)
+        public ActionResult UpdateUsers(String id, UsersUpdateDto usersUpdateDto)
         {
             var usersFromRepo = _repository.GetUsersById(id);
             if (usersFromRepo == null)
@@ -79,7 +81,7 @@ namespace RentCarAPI.Controllers
             return NoContent();
         }
         [HttpPatch("{id}")]
-        public ActionResult PartialCarsUpdate(int id, JsonPatchDocument<UsersUpdateDto> patchDocument)
+        public ActionResult PartialCarsUpdate(String id, JsonPatchDocument<UsersUpdateDto> patchDocument)
         {
             var usersFromRepo = _repository.GetUsersById(id);
             if (usersFromRepo == null)

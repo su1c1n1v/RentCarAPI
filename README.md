@@ -8,13 +8,14 @@
 - [x] Create a new Register;
 - [x] Update a Register;
 - [x] Update a Car;
-- [x] Implements Dto using AutoMapper;
 - [x] Update a User;
-- [x] Rent a car;
 - [x] Provide Registers data (registers of cars rented);
 - [x] Provide Users data;
 - [x] Provide Cars data;
+- [x] Implements Dto using AutoMapper;
+- [x] Rent a car;
 - [x] SQL Server; 
+- [x] Implement Identity; 
 - [x] User Authentication (You need to create a login in the SQL Server).
 
 ---
@@ -31,6 +32,8 @@
 - Microsoft.AspNetCore.JsonPatch;
 - Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 - AutoMapper.Extensions.Microsoft.DependencyInjection;
+- Microsoft.Extensions.Identity.Core;
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 ---
 #### Migrations
 - "dotnet toll install --global dotnet-ef" => to install the "dotnet-ef if you dont have installed in your PC";

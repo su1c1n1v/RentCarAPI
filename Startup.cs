@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using RentCarAPI.Data;
 using System;
@@ -25,7 +27,10 @@ namespace RentCarAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationContext>(Temp => Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
+            services.AddDbContext<ApplicationContext>(Temp => 
+                Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                        .AddEntityFrameworkStores<ApplicationContext>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers().AddNewtonsoftJson(Temp => {
                 Temp.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -42,6 +47,7 @@ namespace RentCarAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
 
             app.UseRouting();
 

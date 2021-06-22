@@ -31,7 +31,7 @@ namespace RentCarAPI.Data
             {
                 throw new ArgumentNullException(nameof(usr));
             }
-            var registers = _context.Registers.Where(Temp => Temp.Equals(usr.Id)).ToList();
+            var registers = _context.Registers.Where(Temp => Temp.User.Id == usr.Id).ToList();
             foreach (Registers rgs in registers)
             {
                 _context.Registers.Remove(rgs);

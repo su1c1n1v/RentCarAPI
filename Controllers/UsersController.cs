@@ -16,11 +16,16 @@ namespace RentCarAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IUsersRepo _repository;
         private readonly IMapper _mapper;
 
-        public UsersController(IUsersRepo repository, IMapper mapper)
+        public UsersController(SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager, IUsersRepo repository, IMapper mapper)
         {
+            _signInManager = signInManager;
+            _userManager = userManager;
             _repository = repository;
             _mapper = mapper;
         }
@@ -46,15 +51,21 @@ namespace RentCarAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<UsersReadDto> CreateUsers(UsersCreateDto userCreateDto)
+        public async Task<ActionResult> CreateNewUser(UsersCreateDto userCreateDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(Temp => Temp.Errors));
+
             var usersModel = _mapper.Map<IdentityUser>(userCreateDto);
             usersModel.EmailConfirmed = true;
-            _repository.CreateUsers(usersModel);
-            _repository.SaveChanges();
+
+            var result = await _userManager.CreateAsync(usersModel);
+
+            await _signInManager.SignInAsync(usersModel, false);
             var usersReadDto = _mapper.Map<UsersReadDto>(usersModel);
             return Ok(usersReadDto);
         }
+
+
         [HttpDelete("{id}")]
         public ActionResult DeleteUsers(String id)
         {

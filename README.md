@@ -34,6 +34,7 @@
 - AutoMapper.Extensions.Microsoft.DependencyInjection;
 - Microsoft.Extensions.Identity.Core;
 - Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+- Microsoft.AspNetCore.Authentication.JwtBearer;
 ---
 #### Migrations
 - "dotnet toll install --global dotnet-ef" => to install the "dotnet-ef if you dont have installed in your PC";

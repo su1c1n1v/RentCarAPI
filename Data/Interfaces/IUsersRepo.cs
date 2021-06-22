@@ -25,5 +25,7 @@ namespace RentCarAPI.Data
 
         void DeleteUsers(IdentityUser usr);
         bool UserExist(IdentityUser usr);
+
+        Task<String> CreateJWT(String Email);
     }
 }

@@ -10,10 +10,20 @@ namespace RentCarAPI.Data
     public class SqlUsersRepo : IUsersRepo
     {
         private readonly ApplicationContext _context;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SqlUsersRepo(ApplicationContext context)
+        public SqlUsersRepo(SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager, ApplicationContext context)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        public async Task<string> CreateJWT(string Email)
+        {
+            return "Nothing";
         }
 
         public void CreateUsers(IdentityUser user)

@@ -13,5 +13,6 @@ namespace RentCarAPI.Dtos
 
         [Required]
         public String Email { get; set; }
+
     }
 }

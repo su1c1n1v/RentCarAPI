@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RentCarAPI.Data;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RentCarAPI.Controllers
 {
-
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class CarsController : ControllerBase

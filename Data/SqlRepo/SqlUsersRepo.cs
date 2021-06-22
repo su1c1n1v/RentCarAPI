@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RentCarAPI.Data
@@ -21,18 +26,31 @@ namespace RentCarAPI.Data
             _signInManager = signInManager;
         }
 
-        public async Task<string> CreateJWT(string Email)
+        public async Task<string> CreateJWT(IdentityUser usr, AppSettings appSettings)
         {
-            return "Nothing";
+            var user = await _userManager.FindByIdAsync(usr.Id);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = appSettings.Creater,
+                Audience = appSettings.ValidIn,
+                Expires = DateTime.UtcNow.AddHours(appSettings.Expiration),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature)
+            };
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
 
         public void CreateUsers(IdentityUser user)
         {
-            if (user == null)
+           /*
+             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            _context.Users.Add(user);
+            _context.Users.Add(user);*/
         }
 
         public void DeleteUsers(IdentityUser usr)
@@ -54,9 +72,9 @@ namespace RentCarAPI.Data
             return _context.Users.ToList();
         }
 
-        public IdentityUser GetUsersById(String Id)
+        public async Task<IdentityUser> GetUsersById(String Id)
         {
-            return _context.Users.FirstOrDefault(Temp => Temp.Id == Id);
+            return await _userManager.FindByIdAsync(Id);
         }
 
         public bool SaveChanges()
@@ -70,6 +88,15 @@ namespace RentCarAPI.Data
         }
 
         public bool UserExist(IdentityUser usr)
+        {
+            if (usr == null)
+            {
+                return true;
+            }
+            return false;
+        }  
+        //Test
+        public bool IsAuthenticate(IdentityUser usr)
         {
             if (usr == null)
             {

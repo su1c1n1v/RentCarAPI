@@ -13,7 +13,7 @@ namespace RentCarAPI.Data
         IEnumerable<IdentityUser> GetAllUsers();
 
         //Get a user by it ID
-        IdentityUser GetUsersById(string Id);
+        Task<IdentityUser> GetUsersById(string Id);
 
         //Create a new user to the DB
         void CreateUsers(IdentityUser usr);
@@ -26,6 +26,6 @@ namespace RentCarAPI.Data
         void DeleteUsers(IdentityUser usr);
         bool UserExist(IdentityUser usr);
 
-        Task<String> CreateJWT(String Email);
+        Task<String> CreateJWT(IdentityUser usr, AppSettings appSettings);
     }
 }

@@ -34,7 +34,9 @@ namespace RentCarAPI
             services.AddDbContext<ApplicationContext>(Temp => 
                 Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>()
-                        .AddEntityFrameworkStores<ApplicationContext>();
+                        .AddRoles<IdentityRole>()
+                        .AddEntityFrameworkStores<ApplicationContext>()
+                        .AddDefaultTokenProviders();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers().AddNewtonsoftJson(Temp => {
                 Temp.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

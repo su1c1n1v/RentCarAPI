@@ -46,7 +46,7 @@ namespace RentCarAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<UsersReadDto> GetUsersById(String Id)
         {
-            var usersItems = _repository.GetUsersById(Id);
+            var usersItems = _repository.GetUsersById(Id).Result;
             if (usersItems != null)
             {
                 var usersDto = _mapper.Map<UsersReadDto>(usersItems);
@@ -68,8 +68,7 @@ namespace RentCarAPI.Controllers
             if (!result.Succeeded) return BadRequest(result.Errors);
 
             await _signInManager.SignInAsync(usersModel, false);
-            var usersReadDto = _mapper.Map<UsersReadDto>(usersModel);
-            return Ok(usersReadDto);
+            return Ok(await _repository.CreateJWT(usersModel,_appSettings));
         }
 
         [HttpPost("login")]
@@ -82,31 +81,24 @@ namespace RentCarAPI.Controllers
             if (usersModel != null)
             {
                 await _signInManager.SignInAsync(usersModel, false);
-                return Ok();
+                return Ok(await _repository.CreateJWT(usersModel, _appSettings));
             }
             return BadRequest();
         }
 
-        [HttpPost("Logout")]
-        public async Task<ActionResult> SignOut(UsersCreateDto userCreateDto)
+        [Authorize]
+        [HttpGet("Logout")]
+        public async Task<ActionResult> SignOut()
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(Temp => Temp.Errors));
-
-            var usersModel = _repository.GetAllUsers().FirstOrDefault(Temp => Temp.Email == userCreateDto.Email && Temp.UserName == userCreateDto.UserName);
-
-            if (usersModel != null)
-            {
-                await _signInManager.SignInAsync(usersModel, false);
-                return Ok();
-            }
-            return BadRequest();
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
 
-
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult DeleteUsers(String id)
         {
-            var usersFromRepo = _repository.GetUsersById(id);
+            var usersFromRepo = _repository.GetUsersById(id).Result;
             if (usersFromRepo == null)
             {
                 return NotFound();
@@ -115,6 +107,8 @@ namespace RentCarAPI.Controllers
             _repository.SaveChanges();
             return NoContent();
         }
+
+        [Authorize]
         [HttpPut("{id}")]
         public ActionResult UpdateUsers(String id, UsersUpdateDto usersUpdateDto)
         {
@@ -124,10 +118,12 @@ namespace RentCarAPI.Controllers
                 return NotFound();
             }
             _mapper.Map(usersUpdateDto, usersFromRepo);
-            _repository.UpdateUsers(usersFromRepo);
+            _repository.UpdateUsers(usersFromRepo.Result);
             _repository.SaveChanges();
             return NoContent();
         }
+
+        [Authorize]
         [HttpPatch("{id}")]
         public ActionResult PartialCarsUpdate(String id, JsonPatchDocument<UsersUpdateDto> patchDocument)
         {
@@ -144,7 +140,7 @@ namespace RentCarAPI.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(usersToPatch, usersFromRepo);
-            _repository.UpdateUsers(usersFromRepo);
+            _repository.UpdateUsers(usersFromRepo.Result);
             _repository.SaveChanges();
             return NoContent();
         }

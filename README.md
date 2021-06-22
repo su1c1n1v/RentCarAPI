@@ -13,6 +13,7 @@
 - [x] Provide Users data;
 - [x] Provide Cars data;
 - [x] Implements Dto using AutoMapper;
+- [x] Implements JWT Authentication to access the API;
 - [x] Rent a car;
 - [x] SQL Server; 
 - [x] Implement Identity; 

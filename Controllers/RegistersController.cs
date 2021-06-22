@@ -50,7 +50,7 @@ namespace RentCarAPI.Controllers
         public ActionResult<RegistersReadDto> CreateRegister(RegistersCreateDto registersCreateDto)
         {
             var registerModel = _mapper.Map<Registers>(registersCreateDto);
-            var userModel = _usersRepository.GetUsersById(registerModel.User.Id);
+            var userModel = _usersRepository.GetUsersById(registerModel.User.Id).Result;
             var carsModel = _carsRepository.GetCarsById(registerModel.CarId.Value);
             if (_carsRepository.IsCarAvailable(carsModel) || _usersRepository.UserExist(userModel))
             {

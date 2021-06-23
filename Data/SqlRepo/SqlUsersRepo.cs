@@ -17,40 +17,61 @@ namespace RentCarAPI.Data
         private readonly ApplicationContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public SqlUsersRepo(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager, ApplicationContext context)
+            UserManager<IdentityUser> userManager, ApplicationContext context,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
-        public async Task<string> CreateJWT(IdentityUser usr, AppSettings appSettings)
+        public SecurityToken GenerateToken(AppSettings appSettings, List<Claim> authClaims)
         {
-            var user = await _userManager.FindByIdAsync(usr.Id);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret));
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = appSettings.Creater,
-                Audience = appSettings.ValidIn,
-                Expires = DateTime.UtcNow.AddHours(appSettings.Expiration),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
-                SecurityAlgorithms.HmacSha256Signature)
-            };
-            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+            return new JwtSecurityToken(
+                issuer: appSettings.ValidIn,
+                audience: appSettings.ValidIn,
+                expires: DateTime.UtcNow.AddHours(appSettings.Expiration),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
         }
 
         public void CreateUsers(IdentityUser user)
         {
-           /*
-             if (user == null)
+
+        }
+
+        public async Task<SecurityToken> Login(IdentityUser usr, AppSettings appSettings)
+        {
+
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+            if (usr == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                throw new ArgumentNullException(nameof(usr));
             }
-            _context.Users.Add(user);*/
+
+            var userRoles = await _userManager.GetRolesAsync(usr);
+            var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name,usr.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+            foreach (var item in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, item));
+            }
+            return GenerateToken(appSettings, authClaims);
         }
 
         public void DeleteUsers(IdentityUser usr)
@@ -94,7 +115,7 @@ namespace RentCarAPI.Data
                 return true;
             }
             return false;
-        }  
+        }
         //Test
         public bool IsAuthenticate(IdentityUser usr)
         {

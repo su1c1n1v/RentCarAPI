@@ -8,10 +8,10 @@ namespace RentCarAPI.Dtos
 {
     public class UsersCreateDto
     {
-        [Required]
+        [Required(ErrorMessage = "User Name is required")]
         public String UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Email is required")]
         public String Email { get; set; }
 
     }

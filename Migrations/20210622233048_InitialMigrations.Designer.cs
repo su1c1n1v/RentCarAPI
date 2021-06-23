@@ -10,8 +10,8 @@ using RentCarAPI.Data;
 namespace RentCarAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210621193546_IdentityMigrations")]
-    partial class IdentityMigrations
+    [Migration("20210622233048_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

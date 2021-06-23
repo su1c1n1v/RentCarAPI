@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RentCarAPI.Data
@@ -26,6 +28,8 @@ namespace RentCarAPI.Data
         void DeleteUsers(IdentityUser usr);
         bool UserExist(IdentityUser usr);
 
-        Task<String> CreateJWT(IdentityUser usr, AppSettings appSettings);
+        SecurityToken GenerateToken(AppSettings appSettings, List<Claim> authClaims);
+
+        Task<SecurityToken> Login(IdentityUser usr, AppSettings appSettings);
     }
 }

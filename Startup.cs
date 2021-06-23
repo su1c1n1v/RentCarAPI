@@ -34,9 +34,8 @@ namespace RentCarAPI
             services.AddDbContext<ApplicationContext>(Temp => 
                 Temp.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>()
-                        .AddRoles<IdentityRole>()
-                        .AddEntityFrameworkStores<ApplicationContext>()
-                        .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers().AddNewtonsoftJson(Temp => {
                 Temp.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -47,30 +46,33 @@ namespace RentCarAPI
             services.AddScoped<ICarsRepo, SqlCarsRepo>();
 
             //JWT
+            
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-            services.AddAuthentication(Temp =>
+            services.AddAuthentication(options =>
             {
-                Temp.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                Temp.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }
-            ).AddJwtBearer( Temp =>
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+ 
+            .AddJwtBearer(options =>
             {
-                Temp.RequireHttpsMetadata = true;
-                Temp.SaveToken = true;
-                Temp.TokenValidationParameters = new TokenValidationParameters
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = appSettings.ValidIn,
-                    ValidIssuer = appSettings.Creater
+                    ValidAudience = appSettings.Creater,
+                    ValidIssuer = appSettings.ValidIn,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret))
                 };
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,10 +82,9 @@ namespace RentCarAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseAuthentication();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

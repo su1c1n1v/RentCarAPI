@@ -78,6 +78,7 @@ namespace RentCarAPI.Controllers
             return Ok(new { Status = "Success", Message = "User created successfully!", });
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost]
         [Route("Register/Admin")]
         public async Task<IActionResult> RegisterNewAdmin(UsersCreateDto userCreateDto)
@@ -89,8 +90,7 @@ namespace RentCarAPI.Controllers
 
             var result = await _userManager.CreateAsync(usersModel);
             if (!result.Succeeded)
-                return BadRequest(new { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
+                return BadRequest(new { Status = "Error", Message = "Admin creation failed! Please check user details and try again." });
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {

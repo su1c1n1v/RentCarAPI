@@ -50,12 +50,14 @@ namespace RentCarAPI.Controllers
         public ActionResult<RegistersReadDto> CreateRegister(RegistersCreateDto registersCreateDto)
         {
             var registerModel = _mapper.Map<Registers>(registersCreateDto);
-            var userModel = _usersRepository.GetUsersById(registerModel.User.Id).Result;
+            var userModel = _usersRepository.GetUsersById(registerModel.UserId).Result;
             var carsModel = _carsRepository.GetCarsById(registerModel.CarId.Value);
-            if (_carsRepository.IsCarAvailable(carsModel) || _usersRepository.UserExist(userModel))
-            {
-                return BadRequest();
-            }
+
+            if (_carsRepository.IsCarAvailable(carsModel) || userModel == null)
+                return BadRequest(new {Status = "Failed", Error = "Car it is not available!"});          
+            if (userModel == null) 
+                return BadRequest(new { Status = "Failed", Error = "User ID is invalid!" });
+            
             _registersRepository.CreateRegisters(registerModel);
             _registersRepository.SaveChanges();
             var registersCreated = _registersRepository.GetRegistersById(registerModel.Id);

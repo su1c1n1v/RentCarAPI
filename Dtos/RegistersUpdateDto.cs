@@ -12,7 +12,7 @@ namespace RentCarAPI.Dtos
         public DateTime EndDate { get; set; }
 
         [Required]
-        public int? UserId { get; set; }
+        public String UserId { get; set; }
 
         [Required]
         public int? CarId { get; set; }

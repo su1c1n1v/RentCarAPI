@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using RentCarAPI.Dtos;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace RentCarAPI.Data
     public interface IUsersRepo
     {
         //Get all Users in the application
-        IEnumerable<IdentityUser> GetAllUsers();
+        IEnumerable<UsersReadDto> GetAllUsers();
 
         //Get a user by it ID
         Task<IdentityUser> GetUsersById(string Id);
@@ -26,7 +27,6 @@ namespace RentCarAPI.Data
         void UpdateUsers(IdentityUser usr);
 
         void DeleteUsers(IdentityUser usr);
-        bool UserExist(IdentityUser usr);
 
         SecurityToken GenerateToken(AppSettings appSettings, List<Claim> authClaims);
 

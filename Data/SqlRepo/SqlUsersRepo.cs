@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using RentCarAPI.Dtos;
 using RentCarAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -15,18 +17,17 @@ namespace RentCarAPI.Data
     public class SqlUsersRepo : IUsersRepo
     {
         private readonly ApplicationContext _context;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
-        public SqlUsersRepo(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager, ApplicationContext context,
-            RoleManager<IdentityRole> roleManager)
+        public SqlUsersRepo(UserManager<IdentityUser> userManager, ApplicationContext context,
+            RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
-            _signInManager = signInManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public SecurityToken GenerateToken(AppSettings appSettings, List<Claim> authClaims)
@@ -88,9 +89,24 @@ namespace RentCarAPI.Data
             _context.Users.Remove(usr);
         }
 
-        public IEnumerable<IdentityUser> GetAllUsers()
+        public IEnumerable<UsersReadDto> GetAllUsers()
         {
-            return _context.Users.ToList();
+            var users = _context.Users.ToList();
+            var list = new List<UsersReadDto>();
+            foreach (var item in users)
+            {
+                var userMap = _mapper.Map<UsersReadDto>(item);
+                if((_userManager.IsInRoleAsync(item, UserRoles.Admin).Result))
+                {
+                    userMap.Role = UserRoles.Admin;
+                }
+                else
+                {
+                    userMap.Role = UserRoles.User;
+                }
+                list.Add(userMap);
+            }
+            return list;
         }
 
         public async Task<IdentityUser> GetUsersById(String Id)
@@ -108,22 +124,5 @@ namespace RentCarAPI.Data
             //nothing
         }
 
-        public bool UserExist(IdentityUser usr)
-        {
-            if (usr == null)
-            {
-                return true;
-            }
-            return false;
-        }
-        //Test
-        public bool IsAuthenticate(IdentityUser usr)
-        {
-            if (usr == null)
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }

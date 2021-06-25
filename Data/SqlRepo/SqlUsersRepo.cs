@@ -109,9 +109,19 @@ namespace RentCarAPI.Data
             return list;
         }
 
-        public async Task<IdentityUser> GetUsersById(String Id)
+        public async Task<UsersReadDto> GetUsersById(String Id)
         {
-            return await _userManager.FindByIdAsync(Id);
+            var usr = await _userManager.FindByIdAsync(Id);
+            var userMap = _mapper.Map<UsersReadDto>(usr);
+            if ((_userManager.IsInRoleAsync(usr, UserRoles.Admin).Result))
+            {
+                userMap.Role = UserRoles.Admin;
+            }
+            else
+            {
+                userMap.Role = UserRoles.User;
+            }
+            return userMap;
         }
 
         public bool SaveChanges()

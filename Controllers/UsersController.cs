@@ -39,7 +39,7 @@ namespace RentCarAPI.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<UsersReadDto>> GetAllUsers()
         {
@@ -62,14 +62,14 @@ namespace RentCarAPI.Controllers
         }
 
         [Route("Register/User")]
-        public async Task<ActionResult> RegisterNewUser(UsersCreateDto userCreateDto)
+        public async Task<ActionResult> RegisterNewUser(UsersCreateDto usersCreateDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(Temp => Temp.Errors));
 
-            var usersModel = _mapper.Map<IdentityUser>(userCreateDto);
+            var usersModel = _mapper.Map<IdentityUser>(usersCreateDto);
             usersModel.EmailConfirmed = true;
 
-            var result = await _userManager.CreateAsync(usersModel);
+            var result = await _userManager.CreateAsync(usersModel,usersCreateDto.Password);
             //_repository.CreateUsers(usersModel);//Nothing
             if (!result.Succeeded) return BadRequest(result.Errors);
 
@@ -78,7 +78,8 @@ namespace RentCarAPI.Controllers
             return Ok(new { Status = "Success", Message = "User created successfully!", });
         }
 
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
+        //[Authorize(Roles = UserRoles.Admin)]
         [HttpPost]
         [Route("Register/Admin")]
         public async Task<IActionResult> RegisterNewAdmin(UsersCreateDto userCreateDto)
@@ -88,9 +89,9 @@ namespace RentCarAPI.Controllers
             var usersModel = _mapper.Map<IdentityUser>(userCreateDto);
             usersModel.EmailConfirmed = true;
 
-            var result = await _userManager.CreateAsync(usersModel);
+            var result = await _userManager.CreateAsync(usersModel, userCreateDto.Password);
             if (!result.Succeeded)
-                return BadRequest(new { Status = "Error", Message = "Admin creation failed! Please check user details and try again." });
+                return BadRequest(new { Status = "Error", Message = result.Errors });
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {
@@ -101,21 +102,24 @@ namespace RentCarAPI.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult> Login(UsersCreateDto userCreateDto)
+        public async Task<ActionResult> Login(UsersLoginDto usersLoginDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(Temp => Temp.Errors));
 
-            var usersModel = await _userManager.FindByNameAsync(userCreateDto.UserName);
-            var token = _repository.Login(usersModel, _appSettings).Result;
-
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            var usersModel = await _userManager.FindByNameAsync(usersLoginDto.UserName);
+            if (await _userManager.CheckPasswordAsync(usersModel, usersLoginDto.Password))
+            {
+                var token = _repository.Login(usersModel, _appSettings).Result;
+                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+            }
+            return BadRequest();
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete("{id}")]
-        public ActionResult DeleteUsers(String id)
+        public async Task<ActionResult> DeleteUsers(String id)
         {
-            var usersFromRepo = _repository.GetUsersById(id).Result;
+            var usersFromRepo = await _userManager.FindByIdAsync(id);
             if (usersFromRepo == null)
             {
                 return NotFound();
@@ -127,24 +131,24 @@ namespace RentCarAPI.Controllers
 
         [Authorize]
         [HttpPut("{id}")]
-        public ActionResult UpdateUsers(String id, UsersUpdateDto usersUpdateDto)
+        public async Task<ActionResult> UpdateUsers(String id, UsersUpdateDto usersUpdateDto)
         {
-            var usersFromRepo = _repository.GetUsersById(id);
+            var usersFromRepo = await _userManager.FindByIdAsync(id);
             if (usersFromRepo == null)
             {
                 return NotFound();
             }
             _mapper.Map(usersUpdateDto, usersFromRepo);
-            _repository.UpdateUsers(usersFromRepo.Result);
+            _repository.UpdateUsers(usersFromRepo);
             _repository.SaveChanges();
             return NoContent();
         }
 
         [Authorize]
         [HttpPatch("{id}")]
-        public ActionResult PartialUsersUpdate(String id, JsonPatchDocument<UsersUpdateDto> patchDocument)
+        public async Task<ActionResult> PartialUsersUpdate(String id, JsonPatchDocument<UsersUpdateDto> patchDocument)
         {
-            var usersFromRepo = _repository.GetUsersById(id);
+            var usersFromRepo = await _userManager.FindByIdAsync(id);
             if (usersFromRepo == null)
             {
                 return NotFound();
@@ -157,7 +161,7 @@ namespace RentCarAPI.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(usersToPatch, usersFromRepo);
-            _repository.UpdateUsers(usersFromRepo.Result);
+            _repository.UpdateUsers(usersFromRepo);
             _repository.SaveChanges();
             return NoContent();
         }

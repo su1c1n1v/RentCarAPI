@@ -16,7 +16,7 @@ namespace RentCarAPI.Data
         IEnumerable<UsersReadDto> GetAllUsers();
 
         //Get a user by it ID
-        Task<IdentityUser> GetUsersById(string Id);
+        Task<UsersReadDto> GetUsersById(string Id);
 
         //Create a new user to the DB
         void CreateUsers(IdentityUser usr);
